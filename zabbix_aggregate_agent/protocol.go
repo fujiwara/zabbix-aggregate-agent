@@ -2,8 +2,8 @@ package zabbix_aggregate_agent
 
 import (
 	"bytes"
-	"errors"
 	"encoding/binary"
+	"errors"
 	"net"
 )
 
@@ -13,7 +13,7 @@ const (
 	HeaderVersion    = uint8(1)
 	DataLengthOffset = int64(HeaderLength + 1)
 	DataLengthSize   = int64(8)
-	DataOffset       = int64(DataLengthOffset+DataLengthSize)
+	DataOffset       = int64(DataLengthOffset + DataLengthSize)
 	ErrorMessage     = "ZBX_NOTSUPPORTED"
 )
 
@@ -37,7 +37,7 @@ func packet2Data(packet []byte) (data []byte, err error) {
 	if err != nil {
 		return
 	}
-	data = packet[DataOffset:DataOffset+dataLength]
+	data = packet[DataOffset : DataOffset+dataLength]
 	return
 }
 

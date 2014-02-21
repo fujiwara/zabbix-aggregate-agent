@@ -1,8 +1,8 @@
 package zabbix_aggregate_agent
 
 import (
-	"net"
 	"bytes"
+	"net"
 	"time"
 )
 

@@ -1,14 +1,14 @@
 package zabbix_aggregate_agent
 
 import (
-	"net"
-	"log"
-	"strconv"
-	"fmt"
+	"bytes"
 	"errors"
+	"fmt"
+	"log"
+	"net"
+	"strconv"
 	"strings"
 	"time"
-	"bytes"
 )
 
 const (
@@ -17,11 +17,11 @@ const (
 
 type Agent struct {
 	ListGenerator func() []string
-	Timeout int
+	Timeout       int
 }
 
 func NewAgent() (a *Agent) {
-	return &Agent{ Timeout: DefaultTimeout }
+	return &Agent{Timeout: DefaultTimeout}
 }
 
 func (a *Agent) Run(bindAddress string) (err error) {
@@ -70,7 +70,7 @@ func sendError(conn net.Conn, err error) {
 	conn.Write(packet)
 }
 
-func getAsync (host string, key string, timeout int, ch chan []byte) {
+func getAsync(host string, key string, timeout int, ch chan []byte) {
 	start := time.Now()
 	log.Printf("getting from %s key: %s", host, key)
 	v, err := Get(host, key, timeout)
@@ -87,14 +87,14 @@ func getAsync (host string, key string, timeout int, ch chan []byte) {
 
 func aggregateValue(list []string, key string, timeout int) (rvalue string, err error) {
 	ch := make(chan []byte)
-	for _, host := range(list) {
+	for _, host := range list {
 		go getAsync(host, key, timeout, ch)
 	}
 	errs := 0
 	isInt := true
 	var value float64
 	var valueBuf bytes.Buffer
-	for _ = range(list) {
+	for _ = range list {
 		v := <-ch
 		vs := string(v)
 		vf, err := strconv.ParseFloat(string(v), 64)
