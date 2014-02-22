@@ -7,13 +7,18 @@ import (
 	"strings"
 )
 
+func ListFromArg (source string) (list []string) {
+	list = ListFromString(source, ",")
+	return
+}
+
 func ListFromFile(filename string) (list []string) {
 	content, err := ioutil.ReadFile(filename)
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	list = ListFromString(string(content))
+	list = ListFromString(string(content), "\n")
 	return
 }
 
@@ -23,13 +28,13 @@ func ListFromCommand(command string) (list []string) {
 		log.Println(err)
 		return
 	}
-	list = ListFromString(string(out))
+	list = ListFromString(string(out), "\n")
 	return
 }
 
-func ListFromString(content string) (list []string) {
+func ListFromString(content string, delimiter string) (list []string) {
 	n := 0
-	lines := strings.Split(content, "\n")
+	lines := strings.Split(content, delimiter)
 	for _, line := range lines {
 		if strings.Index(line, "#") == 0 || line == "" {
 			// comment out

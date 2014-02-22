@@ -4,7 +4,6 @@ import (
 	zaa "./zabbix_aggregate_agent"
 	"flag"
 	"log"
-	"strings"
 )
 
 const (
@@ -35,9 +34,7 @@ func main() {
 		agent.ListGenerator = zaa.ListFromFile
 		agent.ListSource = listFile
 	} else if listArg != "" {
-		agent.ListGenerator = func(source string) []string {
-			return strings.Split(source, ",")
-		}
+		agent.ListGenerator = zaa.ListFromArg
 		agent.ListSource = listArg
 	} else if listCommand != "" {
 		agent.ListGenerator = zaa.ListFromCommand
