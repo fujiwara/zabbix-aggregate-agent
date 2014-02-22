@@ -7,27 +7,27 @@ import (
 	"strings"
 )
 
-func ListFromFile(filename string) (list []string, err error) {
+func ListFromFile(filename string) (list []string) {
 	content, err := ioutil.ReadFile(filename)
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	list, err = ListFromString(string(content))
+	list = ListFromString(string(content))
 	return
 }
 
-func ListFromCommand(command string) (list []string, err error) {
+func ListFromCommand(command string) (list []string) {
 	out, err := exec.Command(command).Output()
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	list, err = ListFromString(string(out))
+	list = ListFromString(string(out))
 	return
 }
 
-func ListFromString(content string) (list []string, err error) {
+func ListFromString(content string) (list []string) {
 	n := 0
 	lines := strings.Split(content, "\n")
 	for _, line := range lines {

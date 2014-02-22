@@ -16,7 +16,8 @@ const (
 )
 
 type Agent struct {
-	ListGenerator func() []string
+	ListGenerator func(string) []string
+	ListSource    string
 	Timeout       int
 }
 
@@ -51,7 +52,8 @@ func (a *Agent) handleConn(conn net.Conn) {
 		sendError(conn, err)
 		return
 	}
-	value, err := aggregateValue(a.ListGenerator(), string(key), a.Timeout)
+	list := a.ListGenerator(a.ListSource)
+	value, err := aggregateValue(list, string(key), a.Timeout)
 	if err != nil {
 		sendError(conn, err)
 		return

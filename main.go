@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./zabbix_aggregate_agent"
+	zaa "./zabbix_aggregate_agent"
 	"flag"
 	"log"
 	"strings"
@@ -28,23 +28,20 @@ func main() {
 	flag.IntVar(&timeout, "timeout", DefaultTimeout, "network timeout with zabbix-agent (seconds)")
 	flag.Parse()
 
-	agent := zabbix_aggregate_agent.NewAgent()
+	agent := zaa.NewAgent()
 	agent.Timeout = timeout
 
 	if listFile != "" {
-		agent.ListGenerator = func() []string {
-			list, _ := zabbix_aggregate_agent.ListFromFile(listFile)
-			return list
-		}
+		agent.ListGenerator = zaa.ListFromFile
+		agent.ListSource = listFile
 	} else if listArg != "" {
-		agent.ListGenerator = func() []string {
-			return strings.Split(listArg, ",")
+		agent.ListGenerator = func(source string) []string {
+			return strings.Split(source, ",")
 		}
+		agent.ListSource = listArg
 	} else if listCommand != "" {
-		agent.ListGenerator = func() []string {
-			list, _ := zabbix_aggregate_agent.ListFromCommand(listCommand)
-			return list
-		}
+		agent.ListGenerator = zaa.ListFromCommand
+		agent.ListSource = listCommand
 	} else {
 		log.Fatalln("option --list, --list-file or --list-command is required.")
 	}
