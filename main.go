@@ -6,10 +6,26 @@ import (
 	"log"
 )
 
-const (
-	DefaultAddress = "127.0.0.1:10050"
-	DefaultTimeout = 5
-)
+func runByConfig(config string) {
+	agents, err := zaa.BuildAgentsFromConfig(config)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	ch := make(chan bool)
+	for _, agent := range agents {
+		go func(agent *zaa.Agent) {
+			err := agent.Run()
+			if err != nil {
+				log.Println("Faild to run agent:", agent.Name, err)
+			}
+			ch <- false
+		}(agent)
+	}
+	for _, _ = range agents {
+		<- ch
+	}
+	log.Fatalln("All of agents could not be run.")
+}
 
 func main() {
 	var (
@@ -19,19 +35,23 @@ func main() {
 		listCommand string
 		timeout     int
 		expires     int
+		config      string
 	)
-
-	flag.StringVar(&listen, "listen", DefaultAddress, "listen address e.g. 0.0.0.0:10050")
+	flag.StringVar(&listen, "listen", "", "listen address e.g. 0.0.0.0:10052")
 	flag.StringVar(&listFile, "list-file", "", "zabbix-agent list file")
 	flag.StringVar(&listCommand, "list-command", "", "command which prints zabbix-agent list to stdout")
 	flag.StringVar(&listArg, "list", "", "zabbix-agent list , separated. e.g. 'web.example.com:10050,192.168.1.1:10050'")
-	flag.IntVar(&timeout, "timeout", DefaultTimeout, "network timeout with zabbix-agent (seconds)")
+	flag.IntVar(&timeout, "timeout", 0, "network timeout with zabbix-agent (seconds)")
 	flag.IntVar(&expires, "expires", 0, "list cache expires (seconds)")
+	flag.StringVar(&config, "config", "", "config file")
 	flag.Parse()
 
-	agent := zaa.NewAgent()
-	agent.Timeout = timeout
+	if config != "" {
+		runByConfig(config)
+		return
+	}
 
+	agent := zaa.NewAgent("1", listen, timeout)
 	if listFile != "" {
 		agent.ListGenerator = zaa.ListFromFile
 		agent.ListSource = listFile
@@ -44,9 +64,9 @@ func main() {
 	} else {
 		log.Fatalln("option either --list, --list-file or --list-command is required.")
 	}
-
-	err := agent.Run(listen)
+	err := agent.Run()
 	if err != nil {
 		log.Fatalln("Error", err)
 	}
+	return
 }
