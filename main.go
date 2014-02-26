@@ -37,7 +37,7 @@ func main() {
 		expires     int
 		config      string
 	)
-	flag.StringVar(&listen, "listen", "", "listen address e.g. 0.0.0.0:10052")
+	flag.StringVar(&listen, "listen", zaa.DefaultAddress, "listen address e.g. 0.0.0.0:10052")
 	flag.StringVar(&listFile, "list-file", "", "zabbix-agent list file")
 	flag.StringVar(&listCommand, "list-command", "", "command which prints zabbix-agent list to stdout")
 	flag.StringVar(&listArg, "list", "", "zabbix-agent list , separated. e.g. 'web.example.com:10050,192.168.1.1:10050'")
