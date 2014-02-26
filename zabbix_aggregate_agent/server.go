@@ -34,9 +34,9 @@ func NewAgent(name string, listen string, timeout int) (a *Agent) {
 	}
 
 	return &Agent{
-		Listen: listen,
-		Timeout: timeout,
-		Name: name,
+		Listen:    listen,
+		Timeout:   timeout,
+		Name:      name,
 		LogPrefix: "[" + name + "]",
 	}
 }

@@ -22,7 +22,7 @@ func runByConfig(config string) {
 		}(agent)
 	}
 	for _, _ = range agents {
-		<- ch
+		<-ch
 	}
 	log.Fatalln("All of agents could not be run.")
 }

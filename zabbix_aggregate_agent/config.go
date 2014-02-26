@@ -2,9 +2,9 @@ package zabbix_aggregate_agent
 
 import (
 	"fmt"
+	"github.com/BurntSushi/toml"
 	"io/ioutil"
 	"log"
-	"github.com/BurntSushi/toml"
 )
 
 type agent struct {
@@ -21,7 +21,7 @@ type agents struct {
 	Agent []agent
 }
 
-func BuildAgentsFromConfig (filename string) (agentInstances []*Agent, err error) {
+func BuildAgentsFromConfig(filename string) (agentInstances []*Agent, err error) {
 	log.Println("Loading config file:", filename)
 	content, err := ioutil.ReadFile(filename)
 	if err != nil {
@@ -34,16 +34,16 @@ func BuildAgentsFromConfig (filename string) (agentInstances []*Agent, err error
 	}
 	for i, c := range config.Agent {
 		if c.Name == "" {
-			c.Name = fmt.Sprintf("%d", i + 1)
+			c.Name = fmt.Sprintf("%d", i+1)
 		}
 		log.Println("Defining agent", c.Name)
 		instance := NewAgent(c.Name, c.Listen, c.Timeout)
 		if c.ListFile != "" {
 			instance.ListGenerator = ListFromFile
-			instance.ListSource    = c.ListFile
+			instance.ListSource = c.ListFile
 		} else if c.List != "" {
 			instance.ListGenerator = ListFromArg
-			instance.ListSource    = c.List
+			instance.ListSource = c.List
 		} else if c.ListCommand != "" {
 			instance.ListGenerator = CachedListGenerator(ListFromCommand, c.Expires)
 			instance.ListSource = c.ListCommand
