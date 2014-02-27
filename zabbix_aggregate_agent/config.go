@@ -23,22 +23,33 @@ type agents struct {
 	Agent []agent
 }
 
-func BuildAgentsFromConfig(filename string) (agentInstances []*Agent, err error) {
+func ReadConfig(filename string) (configAgents []agent, err error) {
 	log.Println("Loading config file:", filename)
 	content, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return
 	}
-	log.Println("\n", string(content))
+	fmt.Println("----------------------------------")
+	fmt.Println(string(content))
+	fmt.Println("----------------------------------")
 	var config agents
 	if _, err = toml.Decode(string(content), &config); err != nil {
 		return
 	}
-	for i, c := range config.Agent {
+	configAgents = config.Agent
+	return
+}
+
+func NewAgentsFromConfig(filename string) (agentInstances []*Agent, err error) {
+	configAgents, err := ReadConfig(filename)
+	if err != nil {
+		return
+	}
+	for i, c := range configAgents {
 		if c.Name == "" {
 			c.Name = fmt.Sprintf("%d", i+1)
 		}
-		log.Println("Defining agent", c.Name)
+		log.Println("Initialize agent", c.Name)
 		instance := NewAgent(c.Name, c.Listen, c.Timeout)
 		if c.ListFile != "" {
 			instance.ListGenerator = NewListFromFileGenerator(c.ListFile)

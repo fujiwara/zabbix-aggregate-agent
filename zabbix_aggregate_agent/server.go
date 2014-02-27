@@ -59,6 +59,15 @@ func (a *Agent) Log(level int, params ...interface{}) {
 	log.Println(args...)
 }
 
+func (a *Agent) RunNotify(ch chan bool) {
+	err := a.Run()
+	if err != nil {
+		a.Log(Error, err)
+		ch <-false
+	}
+	return
+}
+
 func (a *Agent) Run() (err error) {
 	a.Log(Info, "Listing", a.Listen)
 	listener, err := net.Listen("tcp", a.Listen)
@@ -82,7 +91,7 @@ func (a *Agent) Run() (err error) {
 func (a *Agent) handleConn(conn net.Conn) {
 	defer a.Log(Debug, "Closing connection:", conn.RemoteAddr())
 	defer conn.Close()
-	key, err := stream2Data(conn)
+	key, err := Stream2Data(conn)
 	if err != nil {
 		a.sendError(conn, err)
 		return
@@ -105,7 +114,7 @@ func (a *Agent) handleConn(conn net.Conn) {
 		return
 	}
 	a.Log(Debug, "Aggregated", keyString, "=", value)
-	packet := data2Packet([]byte(value))
+	packet := Data2Packet([]byte(value))
 	_, err = conn.Write(packet)
 	if err != nil {
 		a.Log(Error, "Error write:", err)
@@ -115,7 +124,7 @@ func (a *Agent) handleConn(conn net.Conn) {
 
 func (a *Agent) sendError(conn net.Conn, err error) {
 	a.Log(Error, err)
-	packet := data2Packet([]byte(ErrorMessage))
+	packet := Data2Packet([]byte(ErrorMessage))
 	conn.Write(packet)
 }
 

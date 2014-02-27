@@ -7,19 +7,13 @@ import (
 )
 
 func runByConfig(config string) {
-	agents, err := zaa.BuildAgentsFromConfig(config)
+	agents, err := zaa.NewAgentsFromConfig(config)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	ch := make(chan bool)
 	for _, agent := range agents {
-		go func(agent *zaa.Agent) {
-			err := agent.Run()
-			if err != nil {
-				log.Println("Faild to run agent:", agent.Name, err)
-			}
-			ch <- false
-		}(agent)
+		go agent.RunNotify(ch)
 	}
 	for _, _ = range agents {
 		<-ch

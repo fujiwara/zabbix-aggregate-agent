@@ -12,7 +12,7 @@ func Get(host string, key string, timeout int) (value []byte, err error) {
 		return
 	}
 	defer conn.Close()
-	msg := data2Packet([]byte(key))
+	msg := Data2Packet([]byte(key))
 	_, err = conn.Write(msg)
 	if err != nil {
 		return
@@ -30,6 +30,6 @@ func Get(host string, key string, timeout int) (value []byte, err error) {
 		}
 		data.Write(reply[0:size])
 	}
-	value, err = packet2Data(data.Bytes())
+	value, err = Packet2Data(data.Bytes())
 	return
 }
