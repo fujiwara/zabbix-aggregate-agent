@@ -15,9 +15,10 @@ index.html: README.md html/index_head.html html/index_foot.html
 	curl -s -H"Content-Type: text/x-markdown" -X POST --data-binary @README.md https://api.github.com/markdown/raw >> index.html
 	cat html/index_foot.html >> index.html
 
-release: index.html
+release:
 	git checkout gh-pages
 	git merge master
+	make index.html
 	script/build.sh
-	git add bin && git commit -m "release binary" && git push origin gh-pages
+	git add bin index.html && git commit -m "release binary" && git push origin gh-pages
 	git checkout -
