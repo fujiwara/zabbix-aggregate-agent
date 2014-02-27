@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>zabbix-aggregate-agent</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="starter-template">
+<h1>
+<a name="zabbix-aggregate-agent" class="anchor" href="#zabbix-aggregate-agent"><span class="octicon octicon-link"></span></a>zabbix-aggregate-agent</h1>
+
+<p>zabbix-agent aggregation proxy daemon.</p>
+
+<h2>
+<a name="repository" class="anchor" href="#repository"><span class="octicon octicon-link"></span></a>Repository</h2>
+
+<p><a href="https://github.com/fujiwara/zabbix-aggregate-agent">github.com/fujiwara/zabbix-aggregate-agent</a></p>
+
+<h2>
+<a name="getting-binary" class="anchor" href="#getting-binary"><span class="octicon octicon-link"></span></a>Getting binary</h2>
+
+<ul>
+<li><a href="http://fujiwara.github.io/zabbix-aggregate-agent/bin/darwin-386/zabbix-aggregate-agent">Mac OS X i386</a></li>
+<li><a href="http://fujiwara.github.io/zabbix-aggregate-agent/bin/darwin-amd64/zabbix-aggregate-agent">Mac OS X x86_64</a></li>
+<li><a href="http://fujiwara.github.io/zabbix-aggregate-agent/bin/linux-386/zabbix-aggregate-agent">Linux i386</a></li>
+<li><a href="http://fujiwara.github.io/zabbix-aggregate-agent/bin/linux-amd64/zabbix-aggregate-agent">Linux x86_64</a></li>
+<li><a href="http://fujiwara.github.io/zabbix-aggregate-agent/bin/linux-arm/zabbix-aggregate-agent">Linux arm</a></li>
+<li><a href="http://fujiwara.github.io/zabbix-aggregate-agent/bin/windows-386/zabbix-aggregate-agent">Windows i386</a></li>
+<li><a href="http://fujiwara.github.io/zabbix-aggregate-agent/bin/windows-amd64/zabbix-aggregate-agent">Windows x86_64</a></li>
+</ul><h2>
+<a name="build" class="anchor" href="#build"><span class="octicon octicon-link"></span></a>Build</h2>
+
+<pre><code>$ git clone http://github.com/fujiwara/zabbix-aggregate-agent
+$ cd zabbix-aggregate-agent
+$ go build
+</code></pre>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<pre><code>$ zabbix-aggregate-agent --config /path/to/config.toml
+</code></pre>
+
+<h2>
+<a name="configuration" class="anchor" href="#configuration"><span class="octicon octicon-link"></span></a>Configuration</h2>
+
+<div class="highlight highlight-toml"><pre><span class="p">[[</span><span class="n">agent</span><span class="p">]]</span>
+<span class="c1"># Name: Identifier</span>
+<span class="n">Name</span> <span class="o">=</span> <span class="s">"web_servers"</span>
+
+<span class="c1"># Listen: Listen address (default "127.0.0.1:10052")</span>
+<span class="n">Listen</span> <span class="o">=</span> <span class="s">"0.0.0.0:10052"</span>
+
+<span class="c1"># List : List of agents' address to aggregate</span>
+<span class="n">List</span> <span class="o">=</span> <span class="p">[</span> <span class="s">"web01:10050"</span><span class="p">,</span> <span class="s">"web02:10050"</span> <span class="p">]</span>
+
+<span class="c1"># Timeout: Timeout seconds for getting reply from agent (default 60)</span>
+<span class="n">Timeout</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="c1"># LogLevel: "Debug", "Info" or "Error" (default "Info")</span>
+<span class="n">LogLevel</span> <span class="o">=</span> <span class="s">"Debug"</span>
+
+<span class="p">[[</span><span class="n">agent</span><span class="p">]]</span>
+<span class="n">Name</span>  <span class="o">=</span> <span class="s">"app_servers"</span>
+<span class="n">Listen</span> <span class="o">=</span> <span class="s">"0.0.0.0:10053"</span>
+
+<span class="c1"># ListFile: Specify the file of list of agent. ("\n" delimited)</span>
+<span class="n">ListFile</span> <span class="o">=</span> <span class="s">"/path/to/agent.list"</span>
+
+<span class="p">[[</span><span class="n">agent</span><span class="p">]]</span>
+<span class="n">Name</span> <span class="o">=</span> <span class="s">"db_servers"</span>
+<span class="n">Listen</span> <span class="o">=</span> <span class="s">"0.0.0.0:10054"</span>
+
+<span class="c1"># ListCommand: Specify a command and arguments to output list of agent address. ("\n" delimited)</span>
+<span class="n">ListCommand</span> <span class="o">=</span> <span class="p">[</span> <span class="s">"/path/to/generate_list.sh"</span><span class="p">,</span> <span class="s">"arg1"</span><span class="p">,</span> <span class="s">"args2"</span> <span class="p">]</span>
+
+<span class="c1"># CacheExpires : Seconds for expiring a cache of ListCommand result. (default 0 == no cache)</span>
+<span class="c1">#   Enabled only when specify "ListCommand"</span>
+<span class="n">CacheExpires</span> <span class="o">=</span> <span class="mi">300</span>
+</pre></div>
+
+<h2>
+<a name="architecture" class="anchor" href="#architecture"><span class="octicon octicon-link"></span></a>Architecture</h2>
+
+<h3>
+<a name="data-flow" class="anchor" href="#data-flow"><span class="octicon octicon-link"></span></a>Data Flow</h3>
+
+<pre><code>[zabbix-server(or zabbix-proxy)]
+    |           ^
+    | (1)key    | (6)aggregated value
+    |           |
+    v           |
+ [zabbix-aggregate-agent] &lt;--- (2) list of zabbix-agents from static list or file or command output
+    |           ^
+    | (3)key    | (4)values(*)
+    v           |
+  [zabbix-agents(*)]
+</code></pre>
+
+<ol>
+<li>server(or proxy) requests "value" to aggregate-agent.</li>
+<li>aggregate-agent resolves list of agents to forwarding request.</li>
+<li>aggregate-agent requests "value" to multiple agents.</li>
+<li>agnets replies "value" to aggregate-agent.</li>
+<li>aggregate-agent aggregates multiple values.
+
+<ul>
+<li>integer or float : add</li>
+<li>string : concat</li>
+</ul>
+</li>
+<li>aggregate-agent replies aggregated value to server.</li>
+</ol><h2>
+<a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Example</h2>
+
+<h3>
+<a name="start" class="anchor" href="#start"><span class="octicon octicon-link"></span></a>start</h3>
+
+<pre><code>$ zabbix-aggregate-agent --config config.toml
+2014/02/27 19:48:19 Loading config file: config.toml
+----------------------------------
+[[agent]]
+Name     = "example"
+List     = ["10.8.0.1:10050", "10.8.0.2:10050"]
+LogLevel = "Debug"
+
+----------------------------------
+2014/02/27 19:48:19 Initialize agent example
+2014/02/27 19:48:19 INFO [example] Listing 127.0.0.1:10052
+2014/02/27 19:48:19 INFO [example] Ready for connection
+</code></pre>
+
+<h3>
+<a name="get-systemuptime-integer" class="anchor" href="#get-systemuptime-integer"><span class="octicon octicon-link"></span></a>get "system.uptime" (integer)</h3>
+
+<pre><code>$ zabbix_get -s 127.0.0.1 -p 10052 -k "system.uptime"
+66407369
+
+2014/02/27 19:48:49 DEBUG [example] Accepted connection from 127.0.0.1:65038
+2014/02/27 19:48:49 DEBUG [example] Key: system.uptime
+2014/02/27 19:48:49 DEBUG [example] List: [10.8.0.1:10050 10.8.0.2:10050]
+2014/02/27 19:48:49 DEBUG [example] Sending key: system.uptime to 10.8.0.1:10050
+2014/02/27 19:48:49 DEBUG [example] Sending key: system.uptime to 10.8.0.2:10050
+2014/02/27 19:48:49 DEBUG [example] Replied from 10.8.0.1:10050 in 25 msec: 53034117
+2014/02/27 19:48:49 DEBUG [example] Replied from 10.8.0.2:10050 in 71 msec: 13373252
+2014/02/27 19:48:49 DEBUG [example] Aggregated system.uptime = 66407369
+2014/02/27 19:48:49 DEBUG [example] Closing connection: 127.0.0.1:65038
+</code></pre>
+
+<h3>
+<a name="get-systemcpuload-float" class="anchor" href="#get-systemcpuload-float"><span class="octicon octicon-link"></span></a>get "system.cpu.load[]" (float)</h3>
+
+<pre><code>$ zabbix_get -s 127.0.0.1 -p 10052 -k "system.cpu.load[]"
+0.360000
+
+2014/02/27 19:55:38 DEBUG [example] Accepted connection from 127.0.0.1:65080
+2014/02/27 19:55:38 DEBUG [example] Key: system.cpu.load[]
+2014/02/27 19:55:38 DEBUG [example] List: [10.8.0.1:10050 10.8.0.2:10050]
+2014/02/27 19:55:38 DEBUG [example] Sending key: system.cpu.load[] to 10.8.0.1:10050
+2014/02/27 19:55:38 DEBUG [example] Sending key: system.cpu.load[] to 10.8.0.2:10050
+2014/02/27 19:55:38 DEBUG [example] Replied from 10.8.0.1:10050 in 26 msec: 0.160000
+2014/02/27 19:55:38 DEBUG [example] Replied from 10.8.0.2:10050 in 71 msec: 0.200000
+2014/02/27 19:55:38 DEBUG [example] Aggregated system.cpu.load[] = 0.360000
+2014/02/27 19:55:38 DEBUG [example] Closing connection: 127.0.0.1:65080
+</code></pre>
+
+<h3>
+<a name="get-systemuname-string" class="anchor" href="#get-systemuname-string"><span class="octicon octicon-link"></span></a>get "system.uname" (string)</h3>
+
+<pre><code>$ zabbix_get -s 127.0.0.1 -p 10052 -k "system.uname"
+Linux www 3.2.0-25-generic #40-Ubuntu SMP Wed May 23 20:30:51 UTC 2012 x86_64 x86_64 x86_64 GNU/Linux
+Linux raspberrypi 3.6.11+ #474 PREEMPT Thu Jun 13 17:14:42 BST 2013 armv6l GNU/Linux
+
+2014/02/27 19:48:55 DEBUG [example] Accepted connection from 127.0.0.1:65041
+2014/02/27 19:48:55 DEBUG [example] Key: system.uname
+2014/02/27 19:48:55 DEBUG [example] List: [10.8.0.1:10050 10.8.0.2:10050]
+2014/02/27 19:48:55 DEBUG [example] Sending key: system.uname to 10.8.0.1:10050
+2014/02/27 19:48:55 DEBUG [example] Sending key: system.uname to 10.8.0.2:10050
+2014/02/27 19:48:55 DEBUG [example] Replied from 10.8.0.1:10050 in 68 msec: Linux www 3.2.0-25-generic #40-Ubuntu SMP Wed May 23 20:30:51 UTC 2012 x86_64 x86_64 x86_64 GNU/Linux
+2014/02/27 19:48:55 DEBUG [example] Replied from 10.8.0.2:10050 in 86 msec: Linux raspberrypi 3.6.11+ #474 PREEMPT Thu Jun 13 17:14:42 BST 2013 armv6l GNU/Linux
+2014/02/27 19:48:55 DEBUG [example] Aggregated system.uname = Linux www 3.2.0-25-generic #40-Ubuntu SMP Wed May 23 20:30:51 UTC 2012 x86_64 x86_64 x86_64 GNU/Linux
+Linux raspberrypi 3.6.11+ #474 PREEMPT Thu Jun 13 17:14:42 BST 2013 armv6l GNU/Linux
+
+2014/02/27 19:48:55 DEBUG [example] Closing connection: 127.0.0.1:65041
+</code></pre>
+
+<h2>
+<a name="author" class="anchor" href="#author"><span class="octicon octicon-link"></span></a>Author</h2>
+
+<p>Fujiwara Shunichiro <a href="mailto:fujiwara.shunichiro@gmail.com">fujiwara.shunichiro@gmail.com</a></p>      </div>
+    </div>
+  </body>
+</html>
