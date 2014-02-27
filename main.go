@@ -1,13 +1,13 @@
 package main
 
 import (
-	zaa "./zabbix_aggregate_agent"
+	. "github.com/fujiwara/zabbix-aggregate-agent/zabbix_aggregate_agent"
 	"flag"
 	"log"
 )
 
 func runByConfig(config string) {
-	agents, err := zaa.NewAgentsFromConfig(config)
+	agents, err := NewAgentsFromConfig(config)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -31,7 +31,7 @@ func main() {
 		expires     int
 		config      string
 	)
-	flag.StringVar(&listen, "listen", zaa.DefaultAddress, "listen address e.g. 0.0.0.0:10052")
+	flag.StringVar(&listen, "listen", DefaultAddress, "listen address e.g. 0.0.0.0:10052")
 	flag.StringVar(&listFile, "list-file", "", "zabbix-agent list file")
 	flag.StringVar(&listCommand, "list-command", "", "command which prints zabbix-agent list to stdout")
 	flag.StringVar(&listArg, "list", "", "zabbix-agent list , separated. e.g. 'web.example.com:10050,192.168.1.1:10050'")
@@ -45,18 +45,18 @@ func main() {
 		return
 	}
 
-	agent := zaa.NewAgent("1", listen, timeout)
+	agent := NewAgent("1", listen, timeout)
 	if listFile != "" {
-		agent.ListGenerator = zaa.NewListFromFileGenerator(listFile)
+		agent.ListGenerator = NewListFromFileGenerator(listFile)
 	} else if listArg != "" {
-		agent.ListGenerator = zaa.NewListFromArgGenerator(listArg)
+		agent.ListGenerator = NewListFromArgGenerator(listArg)
 	} else if listCommand != "" {
-		agent.ListGenerator = zaa.NewCachedListGenerator(
-			zaa.NewListFromCommandGenerator(listCommand),
+		agent.ListGenerator = NewCachedListGenerator(
+			NewListFromCommandGenerator(listCommand),
 			expires,
 		)
 	} else {
-		log.Fatalln("option either --list, --list-file or --list-command is required.")
+		log.Fatalln("option either --config, --list, --list-file or --list-command is required.")
 	}
 	err := agent.Run()
 	if err != nil {
