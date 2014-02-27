@@ -5,6 +5,7 @@ import (
 	"github.com/BurntSushi/toml"
 	"io/ioutil"
 	"log"
+	"strings"
 )
 
 type agent struct {
@@ -15,6 +16,7 @@ type agent struct {
 	List        string
 	Timeout     int
 	Expires     int
+	LogLevel    string
 }
 
 type agents struct {
@@ -39,17 +41,26 @@ func BuildAgentsFromConfig(filename string) (agentInstances []*Agent, err error)
 		log.Println("Defining agent", c.Name)
 		instance := NewAgent(c.Name, c.Listen, c.Timeout)
 		if c.ListFile != "" {
-			instance.ListGenerator = ListFromFile
-			instance.ListSource = c.ListFile
+			instance.ListGenerator = NewListFromFileGenerator(c.ListFile)
 		} else if c.List != "" {
-			instance.ListGenerator = ListFromArg
-			instance.ListSource = c.List
+			instance.ListGenerator = NewListFromArgGenerator(c.List)
 		} else if c.ListCommand != "" {
-			instance.ListGenerator = CachedListGenerator(ListFromCommand, c.Expires)
-			instance.ListSource = c.ListCommand
+			instance.ListGenerator = NewCachedListGenerator(NewListFromCommandGenerator(c.ListCommand), c.Expires)
 		} else {
 			log.Fatalln("option List, ListFile or ListCommand is required.")
 		}
+
+		switch strings.ToUpper(c.LogLevel) {
+		case "DEBUG":
+			instance.MinLogLevel = Debug
+		case "INFO":
+			instance.MinLogLevel = Info
+		case "ERROR":
+			instance.MinLogLevel = Error
+		default:
+			log.Println("LogLevel", c.LogLevel, "is unsupported. Using default level", LogLabel[DefaultLogLevel])
+		}
+
 		agentInstances = append(agentInstances, instance)
 	}
 	return

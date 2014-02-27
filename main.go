@@ -53,14 +53,11 @@ func main() {
 
 	agent := zaa.NewAgent("1", listen, timeout)
 	if listFile != "" {
-		agent.ListGenerator = zaa.ListFromFile
-		agent.ListSource = listFile
+		agent.ListGenerator = zaa.NewListFromFileGenerator(listFile)
 	} else if listArg != "" {
-		agent.ListGenerator = zaa.ListFromArg
-		agent.ListSource = listArg
+		agent.ListGenerator = zaa.NewListFromArgGenerator(listArg)
 	} else if listCommand != "" {
-		agent.ListGenerator = zaa.CachedListGenerator(zaa.ListFromCommand, expires)
-		agent.ListSource = listCommand
+		agent.ListGenerator = zaa.NewCachedListGenerator(zaa.NewListFromCommandGenerator(listCommand), expires)
 	} else {
 		log.Fatalln("option either --list, --list-file or --list-command is required.")
 	}

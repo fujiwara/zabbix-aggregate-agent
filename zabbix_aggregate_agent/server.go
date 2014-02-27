@@ -12,17 +12,23 @@ import (
 )
 
 const (
-	DefaultTimeout = 5
-	DefaultAddress = "127.0.0.1:10052"
+	DefaultTimeout  = 60
+	DefaultAddress  = "127.0.0.1:10052"
+	Debug           = 0
+	Info            = 1
+	Error           = 2
+	DefaultLogLevel = Info
 )
+
+var LogLabel = []string{"DEBUG", "INFO", "ERROR"}
 
 type Agent struct {
 	Name          string
 	Listen        string
-	ListGenerator func(string) []string
-	ListSource    string
+	ListGenerator func() ([]string, error)
 	Timeout       int
 	LogPrefix     string
+	MinLogLevel   int
 }
 
 func NewAgent(name string, listen string, timeout int) (a *Agent) {
@@ -34,42 +40,47 @@ func NewAgent(name string, listen string, timeout int) (a *Agent) {
 	}
 
 	return &Agent{
-		Listen:    listen,
-		Timeout:   timeout,
-		Name:      name,
-		LogPrefix: "[" + name + "]",
+		Listen:      listen,
+		Timeout:     timeout,
+		Name:        name,
+		LogPrefix:   "[" + name + "]",
+		MinLogLevel: DefaultLogLevel,
 	}
 }
 
-func (a *Agent) Log(params ...interface{}) {
+func (a *Agent) Log(level int, params ...interface{}) {
+	if a.MinLogLevel > level {
+		return
+	}
 	var args []interface{}
+	args = append(args, LogLabel[level])
 	args = append(args, a.LogPrefix)
 	args = append(args, params...)
 	log.Println(args...)
 }
 
 func (a *Agent) Run() (err error) {
-	a.Log("Listing", a.Listen)
+	a.Log(Info, "Listing", a.Listen)
 	listener, err := net.Listen("tcp", a.Listen)
 	if err != nil {
 		return
 	}
-	a.Log("Ready for connection")
+	a.Log(Info, "Ready for connection")
 	var conn net.Conn
 	for {
 		conn, err = listener.Accept()
 		if err != nil {
-			a.Log("Error accept:", err)
+			a.Log(Error, "Error accept:", err)
 			continue
 		}
-		a.Log("Accepted connection from", conn.RemoteAddr())
+		a.Log(Debug, "Accepted connection from", conn.RemoteAddr())
 		go a.handleConn(conn)
 	}
 	return
 }
 
 func (a *Agent) handleConn(conn net.Conn) {
-	defer a.Log("Closing connection:", conn.RemoteAddr())
+	defer a.Log(Debug, "Closing connection:", conn.RemoteAddr())
 	defer conn.Close()
 	key, err := stream2Data(conn)
 	if err != nil {
@@ -77,38 +88,46 @@ func (a *Agent) handleConn(conn net.Conn) {
 		return
 	}
 	keyString := strings.Trim(string(key), "\n")
-	list := a.ListGenerator(a.ListSource)
+	list, err := a.ListGenerator()
+	if err != nil {
+		a.sendError(conn, err)
+		return
+	}
+	if len(list) == 0 {
+		a.sendError(conn, errors.New("Empty list"))
+		return
+	}
 	value, err := a.aggregateValue(list, keyString)
 	if err != nil {
 		a.sendError(conn, err)
 		return
 	}
-	a.Log("Aggregated", keyString, ":", value)
+	a.Log(Debug, "Aggregated", keyString, ":", value)
 	packet := data2Packet([]byte(value))
 	_, err = conn.Write(packet)
 	if err != nil {
-		a.Log("Error write:", err)
+		a.Log(Error, "Error write:", err)
 	}
 	return
 }
 
 func (a *Agent) sendError(conn net.Conn, err error) {
-	a.Log(conn.RemoteAddr(), err)
+	a.Log(Error, conn.RemoteAddr(), err)
 	packet := data2Packet([]byte(ErrorMessage))
 	conn.Write(packet)
 }
 
 func (a *Agent) getAsync(host string, key string, timeout int, ch chan []byte) {
 	start := time.Now()
-	a.Log("Sending key:", key, "to", host)
+	a.Log(Debug, "Sending key:", key, "to", host)
 	v, err := Get(host, key, timeout)
 	end := time.Now()
 	elapsed := int64(end.Sub(start) / time.Millisecond) // msec
 	if err != nil {
-		a.Log(err)
+		a.Log(Error, err)
 		v = []byte("0")
 	} else {
-		a.Log("Replied from", host, "in", elapsed, "msec:", string(v))
+		a.Log(Debug, "Replied from", host, "in", elapsed, "msec:", string(v))
 	}
 	ch <- v
 }
