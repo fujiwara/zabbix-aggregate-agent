@@ -6,6 +6,16 @@ zabbix-agent aggregation proxy daemon.
 
 [github.com/fujiwara/zabbix-aggregate-agent](https://github.com/fujiwara/zabbix-aggregate-agent)
 
+## Getting binary
+
+ * [Mac OS X i386](http://fujiwara.github.io/bin/darwin-386/zabbix-aggregate-agent)
+ * [Mac OS X x86_64](http://fujiwara.github.io/bin/darwin-amd64/zabbix-aggregate-agent)
+ * [Linux i386](http://fujiwara.github.io/bin/linux-386/zabbix-aggregate-agent)
+ * [Linux x86_64](http://fujiwara.github.io/bin/linux-amd64/zabbix-aggregate-agent)
+ * [Linux arm](http://fujiwara.github.io/bin/linux-arm/zabbix-aggregate-agent)
+ * [Windows i386](http://fujiwara.github.io/bin/windows-386/zabbix-aggregate-agent)
+ * [Windows x86_64](http://fujiwara.github.io/bin/windows-amd64/zabbix-aggregate-agent)
+
 ## Build & Install
 
 Install to $GOPATH.
