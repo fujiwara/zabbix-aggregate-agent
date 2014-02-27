@@ -18,7 +18,7 @@ Install to $GOPATH.
 
 ## Configuration
 
-```
+```toml
 [[agent]]
 # Name: Identifier
 Name = "web_servers"
@@ -57,6 +57,7 @@ CacheExpires = 300
 ## Architecture
 
 ### Data Flow
+
 ```
 [zabbix-server(or zabbix-proxy)]
     |           ^
