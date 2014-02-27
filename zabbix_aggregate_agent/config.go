@@ -62,6 +62,8 @@ func BuildAgentsFromConfig(filename string) (agentInstances []*Agent, err error)
 			instance.MinLogLevel = Info
 		case "ERROR":
 			instance.MinLogLevel = Error
+		case "":
+			// default
 		default:
 			log.Println("LogLevel", c.LogLevel, "is unsupported. Using default level", LogLabel[DefaultLogLevel])
 		}
