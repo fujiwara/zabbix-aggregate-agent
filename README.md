@@ -8,19 +8,19 @@ zabbix-agent aggregation proxy daemon.
 
 ## Getting binary
 
- * [Mac OS X i386](http://fujiwara.github.io/bin/darwin-386/zabbix-aggregate-agent)
- * [Mac OS X x86_64](http://fujiwara.github.io/bin/darwin-amd64/zabbix-aggregate-agent)
- * [Linux i386](http://fujiwara.github.io/bin/linux-386/zabbix-aggregate-agent)
- * [Linux x86_64](http://fujiwara.github.io/bin/linux-amd64/zabbix-aggregate-agent)
- * [Linux arm](http://fujiwara.github.io/bin/linux-arm/zabbix-aggregate-agent)
- * [Windows i386](http://fujiwara.github.io/bin/windows-386/zabbix-aggregate-agent)
- * [Windows x86_64](http://fujiwara.github.io/bin/windows-amd64/zabbix-aggregate-agent)
+ * [Mac OS X i386](http://fujiwara.github.io/zabbix-aggregate-agent/bin/darwin-386/zabbix-aggregate-agent)
+ * [Mac OS X x86_64](http://fujiwara.github.io/zabbix-aggregate-agent/bin/darwin-amd64/zabbix-aggregate-agent)
+ * [Linux i386](http://fujiwara.github.io/zabbix-aggregate-agent/bin/linux-386/zabbix-aggregate-agent)
+ * [Linux x86_64](http://fujiwara.github.io/zabbix-aggregate-agent/bin/linux-amd64/zabbix-aggregate-agent)
+ * [Linux arm](http://fujiwara.github.io/zabbix-aggregate-agent/bin/linux-arm/zabbix-aggregate-agent)
+ * [Windows i386](http://fujiwara.github.io/zabbix-aggregate-agent/bin/windows-386/zabbix-aggregate-agent)
+ * [Windows x86_64](http://fujiwara.github.io/zabbix-aggregate-agent/bin/windows-amd64/zabbix-aggregate-agent)
 
-## Build & Install
+## Build
 
-Install to $GOPATH.
-
-    $ go get github.com/fujiwara/zabbix-aggregate-agent
+    $ git clone http://github.com/fujiwara/zabbix-aggregate-agent
+    $ cd zabbix-aggregate-agent
+    $ go build
 
 ## Usage
 

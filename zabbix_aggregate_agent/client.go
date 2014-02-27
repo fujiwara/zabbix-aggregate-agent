@@ -1,7 +1,6 @@
 package zabbix_aggregate_agent
 
 import (
-	"bytes"
 	"net"
 	"time"
 )
@@ -17,19 +16,6 @@ func Get(host string, key string, timeout int) (value []byte, err error) {
 	if err != nil {
 		return
 	}
-	reply := make([]byte, 1024)
-	data := new(bytes.Buffer)
-	var size int
-	for {
-		size, err = conn.Read(reply)
-		if size == 0 {
-			break
-		}
-		if err != nil {
-			return
-		}
-		data.Write(reply[0:size])
-	}
-	value, err = Packet2Data(data.Bytes())
+	value, err = Stream2Data(conn)
 	return
 }

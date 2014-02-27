@@ -10,8 +10,10 @@ clean:
 binary:
 	script/build.sh
 
-index.html: README.md
-	curl -s -H"Content-Type: text/x-markdown" -X POST --data-binary @README.md https://api.github.com/markdown/raw > index.html
+index.html: README.md html/index_head.html html/index_foot.html
+	cat html/index_head.html > index.html
+	curl -s -H"Content-Type: text/x-markdown" -X POST --data-binary @README.md https://api.github.com/markdown/raw >> index.html
+	cat html/index_foot.html >> index.html
 
 release: index.html
 	git checkout gh-pages
