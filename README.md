@@ -16,11 +16,11 @@ zabbix-agent aggregation proxy daemon.
  * [Windows i386](http://fujiwara.github.io/zabbix-aggregate-agent/bin/windows-386/zabbix-aggregate-agent)
  * [Windows x86_64](http://fujiwara.github.io/zabbix-aggregate-agent/bin/windows-amd64/zabbix-aggregate-agent)
 
-## Build & Install
+## Build
 
-Install to $GOPATH.
-
-    $ go get github.com/fujiwara/zabbix-aggregate-agent
+    $ git clone http://github.com/fujiwara/zabbix-aggregate-agent
+    $ cd zabbix-aggregate-agent
+    $ go build
 
 ## Usage
 
