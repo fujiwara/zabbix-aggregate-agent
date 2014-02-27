@@ -134,7 +134,7 @@ $ zabbix_get -s 127.0.0.1 -p 10052 -k "system.cpu.load[]"
 2014/02/27 19:55:38 DEBUG [example] Closing connection: 127.0.0.1:65080
 ```
 
-## get "system.uname" (string)
+### get "system.uname" (string)
 
 ```
 $ zabbix_get -s 127.0.0.1 -p 10052 -k "system.uname"
