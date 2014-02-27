@@ -1,0 +1,33 @@
+[[agent]]
+# Name: Identifier
+Name = "web_servers"
+
+# Listen: Listen address (default "127.0.0.1:10052")
+Listen = "0.0.0.0:10052"
+
+# List : List of agents' address to aggregate
+List = [ "web01:10050", "web02:10050" ]
+
+# Timeout: Timeout seconds for getting reply from agent (default 60)
+Timeout = 10
+
+# LogLevel: "Debug", "Info" or "Error" (default "Info")
+LogLevel = "Debug"
+
+[[agent]]
+Name  = "app_servers"
+Listen = "0.0.0.0:10053"
+
+# ListFile: Specify the file of list of agent. ("\n" delimited)
+ListFile = "/path/to/agent.list"
+
+[[agent]]
+Name = "db_servers"
+Listen = "0.0.0.0:10054"
+
+# ListCommand: Specify a command and arguments to output list of agent address. ("\n" delimited)
+ListCommand = [ "/path/to/generate_list.sh", "arg1", "args2" ]
+
+# CacheExpires : Seconds for expiring a cache of ListCommand result. (default 0 == no cache)
+#   Enabled only when specify "ListCommand"
+CacheExpires = 300
