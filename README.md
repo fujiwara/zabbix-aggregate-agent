@@ -64,12 +64,11 @@ CacheExpires = 300
     | (1)key    | (6)aggregated value
     |           |
     v           |
-  [zabbix-aggregate-agent] <--- (2) list of zabbix-agents from static list or file or command output
+ [zabbix-aggregate-agent] <--- (2) list of zabbix-agents from static list or file or command output
     |           ^
-    | (3)key    | (4)values(\*)
+    | (3)key    | (4)values(*)
     v           |
-  [zabbix-agents(\*)]
-
+  [zabbix-agents(*)]
 ```
 
 1. server(or proxy) requests "value" to aggregate-agent.
