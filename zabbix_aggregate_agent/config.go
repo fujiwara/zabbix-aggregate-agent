@@ -9,14 +9,14 @@ import (
 )
 
 type agent struct {
-	Name        string
-	Listen      string
-	ListFile    string
-	ListCommand string
-	List        string
-	Timeout     int
-	Expires     int
-	LogLevel    string
+	Name         string
+	Listen       string
+	ListFile     string
+	ListCommand  []string
+	List         []string
+	Timeout      int
+	CacheExpires int
+	LogLevel     string
 }
 
 type agents struct {
@@ -42,10 +42,15 @@ func BuildAgentsFromConfig(filename string) (agentInstances []*Agent, err error)
 		instance := NewAgent(c.Name, c.Listen, c.Timeout)
 		if c.ListFile != "" {
 			instance.ListGenerator = NewListFromFileGenerator(c.ListFile)
-		} else if c.List != "" {
-			instance.ListGenerator = NewListFromArgGenerator(c.List)
-		} else if c.ListCommand != "" {
-			instance.ListGenerator = NewCachedListGenerator(NewListFromCommandGenerator(c.ListCommand), c.Expires)
+		} else if len(c.List) > 0 {
+			instance.ListGenerator = NewListGenerator(c.List)
+		} else if len(c.ListCommand) > 0 {
+			command := c.ListCommand[0]
+			args := c.ListCommand[1:]
+			instance.ListGenerator = NewCachedListGenerator(
+				NewListFromCommandGenerator(command, args...),
+				c.CacheExpires,
+			)
 		} else {
 			log.Fatalln("option List, ListFile or ListCommand is required.")
 		}

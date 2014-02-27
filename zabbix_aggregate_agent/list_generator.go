@@ -1,6 +1,8 @@
 package zabbix_aggregate_agent
 
 import (
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"os/exec"
 	"strings"
@@ -44,10 +46,18 @@ func NewListFromArgGenerator(source string) (f func() ([]string, error)) {
 	return
 }
 
+func NewListGenerator(list []string) (f func() ([]string, error)) {
+	f = func() ([]string, error) {
+		return list, nil
+	}
+	return
+}
+
 func NewListFromFileGenerator(filename string) (f func() ([]string, error)) {
 	f = func() (list []string, err error) {
 		content, err := ioutil.ReadFile(filename)
 		if err != nil {
+			err = errors.New(fmt.Sprintf("ListFile read failed: %s", err))
 			return
 		}
 		contentString := string(content)
@@ -57,10 +67,11 @@ func NewListFromFileGenerator(filename string) (f func() ([]string, error)) {
 	return
 }
 
-func NewListFromCommandGenerator(command string) (f func() ([]string, error)) {
+func NewListFromCommandGenerator(command string, args ...string) (f func() ([]string, error)) {
 	f = func() (list []string, err error) {
-		out, err := exec.Command(command).Output()
+		out, err := exec.Command(command, args...).Output()
 		if err != nil {
+			err = errors.New(fmt.Sprintf("ListCommand execute failed: %s", err))
 			return
 		}
 		outString := string(out)

@@ -87,12 +87,14 @@ func (a *Agent) handleConn(conn net.Conn) {
 		a.sendError(conn, err)
 		return
 	}
-	keyString := strings.Trim(string(key), "\n")
+	keyString := strings.TrimRight(string(key), "\n")
+	a.Log(Debug, "Key:", keyString)
 	list, err := a.ListGenerator()
 	if err != nil {
 		a.sendError(conn, err)
 		return
 	}
+	a.Log(Debug, "List:", list)
 	if len(list) == 0 {
 		a.sendError(conn, errors.New("Empty list"))
 		return
@@ -102,7 +104,7 @@ func (a *Agent) handleConn(conn net.Conn) {
 		a.sendError(conn, err)
 		return
 	}
-	a.Log(Debug, "Aggregated", keyString, ":", value)
+	a.Log(Debug, "Aggregated", keyString, "=", value)
 	packet := data2Packet([]byte(value))
 	_, err = conn.Write(packet)
 	if err != nil {
@@ -112,7 +114,7 @@ func (a *Agent) handleConn(conn net.Conn) {
 }
 
 func (a *Agent) sendError(conn net.Conn, err error) {
-	a.Log(Error, conn.RemoteAddr(), err)
+	a.Log(Error, err)
 	packet := data2Packet([]byte(ErrorMessage))
 	conn.Write(packet)
 }
