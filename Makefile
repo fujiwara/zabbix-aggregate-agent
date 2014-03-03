@@ -15,10 +15,17 @@ pages:
 	curl -s -H"Content-Type: text/x-markdown" -X POST --data-binary @README.md https://api.github.com/markdown/raw >> index.html
 	cat html/index_foot.html >> index.html
 
-release:
+release_bin:
 	git checkout gh-pages
 	git merge master
 	make pages
 	script/build.sh
 	git add bin index.html && git commit -m "release binary" && git push origin gh-pages
+	git checkout -
+
+release_doc:
+	git checkout gh-pages
+	git merge master
+	make pages
+	git add index.html && git commit -m "release pages" && git push origin gh-pages
 	git checkout -
