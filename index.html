@@ -116,7 +116,44 @@ $ go build
 </ul>
 </li>
 <li>aggregate-agent replies aggregated value to server.</li>
-</ol><h2>
+</ol><h3>
+<a name="comparing-with-aggregate-checks" class="anchor" href="#comparing-with-aggregate-checks"><span class="octicon octicon-link"></span></a>Comparing with "Aggregate checks"</h3>
+
+<p><a href="https://www.zabbix.com/documentation/2.2/manual/config/items/itemtypes/aggregate">Aggregate checks - Zabbix</a></p>
+
+<h4>
+<a name="aggregate-checks" class="anchor" href="#aggregate-checks"><span class="octicon octicon-link"></span></a>Aggregate checks</h4>
+
+<h5>
+<a name="pros" class="anchor" href="#pros"><span class="octicon octicon-link"></span></a>Pros.</h5>
+
+<ul>
+<li>Standard feature.</li>
+</ul><h5>
+<a name="cons" class="anchor" href="#cons"><span class="octicon octicon-link"></span></a>Cons.</h5>
+
+<ul>
+<li>Need to define items (type:aggregate check), graphs and triggers each of items for aggregation.</li>
+</ul><h4>
+<a name="zabbix-aggregate-agent-1" class="anchor" href="#zabbix-aggregate-agent-1"><span class="octicon octicon-link"></span></a>zabbix-aggregate-agent</h4>
+
+<h4>
+<a name="pros-1" class="anchor" href="#pros-1"><span class="octicon octicon-link"></span></a>Pros.</h4>
+
+<ul>
+<li>The items, graphs and triggers can be diverted for aggregate-agents.</li>
+<li>zabbix-agents to be aggregated, are not necessary to be registered in zabbix-server.
+
+<ul>
+<li>e.g. Temporary instances by auto scaling action.</li>
+</ul>
+</li>
+</ul><h4>
+<a name="cons-1" class="anchor" href="#cons-1"><span class="octicon octicon-link"></span></a>Cons.</h4>
+
+<ul>
+<li>Need to run a daemon of zabbix-aggregate-agent.</li>
+</ul><h2>
 <a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Example</h2>
 
 <h3>

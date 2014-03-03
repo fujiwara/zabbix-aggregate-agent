@@ -12,9 +12,7 @@ func TestIncludesPortNumber(t *testing.T) {
 		"[2001:db8::dead:beef]:10050",
 	}
 	for _, addr := range addrWithPort {
-		if IsIncludesPortNumber(addr) {
-			// ok
-		} else {
+		if FillDefaultPort(addr) != addr {
 			t.Errorf("%s includes port number", addr)
 		}
 	}
@@ -27,7 +25,7 @@ func TestNotIncludesPortNumber(t *testing.T) {
 		"[2001:db8::dead:beef]",
 	}
 	for _, addr := range addrWithoutPort {
-		if IsIncludesPortNumber(addr) {
+		if FillDefaultPort(addr) != addr + ":10050" {
 			t.Errorf("%s not includes port number", addr)
 		}
 	}

@@ -90,6 +90,31 @@ CacheExpires = 300
   * string : concat
 6. aggregate-agent replies aggregated value to server.
 
+### Comparing with "Aggregate checks"
+
+[Aggregate checks - Zabbix](https://www.zabbix.com/documentation/2.2/manual/config/items/itemtypes/aggregate)
+
+#### Aggregate checks
+
+##### Pros.
+
+* Standard feature.
+
+##### Cons.
+
+* Need to define items (type:aggregate check), graphs and triggers each of items for aggregation.
+
+#### zabbix-aggregate-agent
+
+#### Pros.
+
+* The items, graphs and triggers can be diverted for aggregate-agents.
+* zabbix-agents to be aggregated, are not necessary to be registered in zabbix-server.
+  * e.g. Temporary instances by auto scaling action.
+
+#### Cons.
+
+* Need to run a daemon of zabbix-aggregate-agent.
 
 ## Example
 
