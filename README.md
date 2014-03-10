@@ -192,3 +192,7 @@ Linux raspberrypi 3.6.11+ #474 PREEMPT Thu Jun 13 17:14:42 BST 2013 armv6l GNU/L
 ## Author
 
 Fujiwara Shunichiro <fujiwara.shunichiro@gmail.com>
+
+## License
+
+MIT License
