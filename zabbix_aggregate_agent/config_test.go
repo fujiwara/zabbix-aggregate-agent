@@ -1,9 +1,8 @@
 package zabbix_aggregate_agent_test
 
 import (
-	. "../zabbix_aggregate_agent"
+	. "github.com/fujiwara/zabbix-aggregate-agent/zabbix_aggregate_agent"
 	"testing"
-	//	"reflect"
 )
 
 func TestReadConfig(t *testing.T) {

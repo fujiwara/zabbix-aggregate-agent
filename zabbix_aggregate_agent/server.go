@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"github.com/fujiwara/go-zabbix-get/zabbix"
 )
 
 const (
@@ -91,7 +92,7 @@ func (a *Agent) Run() (err error) {
 func (a *Agent) handleConn(conn net.Conn) {
 	defer a.Log(Debug, "Closing connection:", conn.RemoteAddr())
 	defer conn.Close()
-	key, err := Stream2Data(conn)
+	key, err := zabbix.Stream2Data(conn)
 	if err != nil {
 		a.sendError(conn, err)
 		return
@@ -114,7 +115,7 @@ func (a *Agent) handleConn(conn net.Conn) {
 		return
 	}
 	a.Log(Debug, "Aggregated", keyString, "=", value)
-	packet := Data2Packet([]byte(value))
+	packet := zabbix.Data2Packet([]byte(value))
 	_, err = conn.Write(packet)
 	if err != nil {
 		a.Log(Error, "Error write:", err)
@@ -124,14 +125,14 @@ func (a *Agent) handleConn(conn net.Conn) {
 
 func (a *Agent) sendError(conn net.Conn, err error) {
 	a.Log(Error, err)
-	packet := Data2Packet([]byte(ErrorMessage))
+	packet := zabbix.Data2Packet([]byte(zabbix.ErrorMessage))
 	conn.Write(packet)
 }
 
 func (a *Agent) getAsync(host string, key string, timeout int, ch chan []byte) {
 	start := time.Now()
 	a.Log(Debug, "Sending key:", key, "to", host)
-	v, err := Get(host, key, timeout)
+	v, err := zabbix.Get(host, key, timeout)
 	end := time.Now()
 	elapsed := int64(end.Sub(start) / time.Millisecond) // msec
 	if err != nil {
@@ -158,7 +159,7 @@ func (a *Agent) aggregateValue(list []string, key string) (rvalue string, err er
 		vf, err := strconv.ParseFloat(string(v), 64)
 		if err != nil {
 			// may be string
-			if vs == ErrorMessage {
+			if vs == zabbix.ErrorMessage {
 				errs++
 			} else {
 				valueBuf.WriteString(vs)
