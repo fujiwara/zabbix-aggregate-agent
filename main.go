@@ -1,7 +1,7 @@
 package main
 
 import (
-	zaa "./zabbix_aggregate_agent"
+	zaa "github.com/fujiwara/zabbix-aggregate-agent/zabbix_aggregate_agent"
 	"flag"
 	"log"
 )
