@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
 	"github.com/fujiwara/go-zabbix-get/zabbix"
 )
 
@@ -64,7 +65,7 @@ func (a *Agent) RunNotify(ch chan bool) {
 	err := a.Run()
 	if err != nil {
 		a.Log(Error, err)
-		ch <-false
+		ch <- false
 	}
 	return
 }
@@ -132,16 +133,16 @@ func (a *Agent) sendError(conn net.Conn, err error) {
 func (a *Agent) getAsync(host string, key string, timeout int, ch chan []byte) {
 	start := time.Now()
 	a.Log(Debug, "Sending key:", key, "to", host)
-	v, err := zabbix.Get(host, key, timeout)
+	v, err := zabbix.Get(host, key, time.Duration(timeout)*time.Second)
 	end := time.Now()
 	elapsed := int64(end.Sub(start) / time.Millisecond) // msec
 	if err != nil {
 		a.Log(Error, err)
-		v = []byte("0")
+		v = "0"
 	} else {
 		a.Log(Debug, "Replied from", host, "in", elapsed, "msec:", string(v))
 	}
-	ch <- v
+	ch <- []byte(v)
 }
 
 func (a *Agent) aggregateValue(list []string, key string) (rvalue string, err error) {

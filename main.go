@@ -29,7 +29,7 @@ func main() {
 	for _, agent := range agents {
 		go agent.RunNotify(ch)
 	}
-	for _, _ = range agents {
+	for _ = range agents {
 		<-ch
 	}
 	log.Fatalln("All of agents could not be run.")
